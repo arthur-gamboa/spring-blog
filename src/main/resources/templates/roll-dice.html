@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Dice Roll</title>
+</head>
+<body>
+    <h2>Let's Roll! What number will the Die land on?</h2><hr><br>
+        <div>
+            <h4>Choose:</h4>
+            <h5 th:href="@{/roll-dice/1}">1</h5>
+            <h5 th:href="@{/roll-dice/2}">2</h5>
+            <h5 th:href="@{/roll-dice/3}">3</h5>
+            <h5 th:href="@{/roll-dice/4}">4</h5>
+            <h5 th:href="@{/roll-dice/5}">5</h5>
+            <h5 th:href="@{/roll-dice/6}">6</h5>
+        </div>
+</body>
+</html>
