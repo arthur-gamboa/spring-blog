@@ -23,14 +23,17 @@ public class PostController {
 
     @GetMapping("/posts")
     public String seeAllPosts(Model viewModel) {
-        List<Post> postsFromDB = postDao.searchByBodyLike("post");
+        List<Post> postsFromDB = postDao.findAll();
         viewModel.addAttribute("posts", postsFromDB);
         return "posts/index";
     }
 
     @GetMapping("/posts/{id}")
-    public String showPost(@PathVariable int id, Model vModel) {
+    public String showOnePost(@PathVariable long id, Model vModel) {
         vModel.addAttribute("post", new Post("iPad", "Pro 11in"));
+//        Post singlePost = postDao.getOne(id);
+//        vModel.addAttribute("post", singlePost);
+//        vModel.addAttribute("title", singlePost.getTitle());
         return "posts/show";
     }
 
@@ -42,7 +45,7 @@ public class PostController {
 
     @PostMapping("/posts/create")
     @ResponseBody
-    public String createPostForm() {
+    public String createPost() {
         return "Submit your posts here.";
     }
 

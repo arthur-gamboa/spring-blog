@@ -7,11 +7,11 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
-public class PostRepository extends JpaRepository<Post, Long> {
+public interface PostRepository extends JpaRepository<Post, Long> {
 
     List<Post> findByTitle(String titleToSearchFor);
 
     @Query("from Post post where post.body like %:term%")
-    List<Post>searchByBodyLike(@Param("term") String term);
+    List<Post> searchByBodyLike(@Param("term") String term);
 
 }

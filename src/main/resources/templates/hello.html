@@ -1,12 +1,31 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Hello</title>
-</head>
+<head th:replace="fragments/header :: main-head('Hello Page')"></head>
 <body>
 
-    <h1>Hello, <span th:text="${name}">World</span>!</h1>
+Replace <br>
+<nav th:replace="fragments/navbar :: mainNav('Wed')">
+    This div will be *replaced* by the fragment
+</nav>
+Include <br>
+<div th:include="fragments/navbar :: mainNav('Tuesday')">
+    The entire content of the partial will be *included* inside this div.
+</div>
+
+<!--<nav>-->
+<!--    <ul>-->
+<!--        <li th:if="${admin}"><a href="/grades">Grades</a></li>-->
+<!--        <li><a href="#">Quizzes</a></li>-->
+<!--    </ul>-->
+<!--</nav>-->
+
+<h2>List of Students</h2>
+
+<ol>
+    <li th:each="aName : ${nameList}" th:text="${aName}"></li>
+</ol>
+
+<h1>Hello, <span th:text="${aName}">ANAME</span>!</h1>
 
 </body>
 </html>

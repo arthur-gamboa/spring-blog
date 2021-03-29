@@ -1,8 +1,9 @@
 package com.codeup.codeup_demo.models;
 
-import javax.persistence.*;
 
 import org.springframework.boot.autoconfigure.domain.EntityScan;
+
+import javax.persistence.*;
 
 @Entity
 @Table(name="posts")
@@ -20,8 +21,8 @@ public class Post {
 
     public Post() {}
 
-    public Post(Long id, String title, String body) {
-        this.id = id;
+    public Post(String title, String body) {
+//        this.id = id;
         this.title = title;
         this.body = body;
     }
