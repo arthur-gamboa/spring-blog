@@ -1,13 +1,12 @@
 package com.codeup.codeup_demo.controllers;
 
 import com.codeup.codeup_demo.models.Post;
+import com.codeup.codeup_demo.models.User;
 import com.codeup.codeup_demo.repo.PostRepository;
+import com.codeup.codeup_demo.repo.UserRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,9 +15,11 @@ import java.util.List;
 public class PostController {
 
     private final PostRepository postDao;
+    private final UserRepository userDao;
 
-    public PostController(PostRepository postDao){
+    public PostController(PostRepository postDao, UserRepository userDao){
         this.postDao = postDao;
+        this.userDao = userDao;
     }
 
     @GetMapping("/posts")
@@ -29,8 +30,8 @@ public class PostController {
     }
 
     @GetMapping("/posts/{id}")
-    public String showOnePost(@PathVariable long id, Model vModel) {
-        vModel.addAttribute("post", new Post("iPad", "Pro 11in"));
+    public String showOnePost(@PathVariable Long id, Model vModel) {
+        vModel.addAttribute("post", postDao.getOne(id));
 //        Post singlePost = postDao.getOne(id);
 //        vModel.addAttribute("post", singlePost);
 //        vModel.addAttribute("title", singlePost.getTitle());
@@ -38,15 +39,28 @@ public class PostController {
     }
 
     @GetMapping("/posts/create")
-    @ResponseBody
     public String viewPostForm() {
-        return "Here, you can create posts.";
+        return "posts/create";
     }
 
     @PostMapping("/posts/create")
-    @ResponseBody
-    public String createPost() {
-        return "Submit your posts here.";
+    public String createPost(@RequestParam(name = "post_title") String post_title, @RequestParam(name = "post_body")String body) {
+        Post postToSave = new Post();
+        User userToAdd = userDao.getOne(2L);
+
+        // Setting title here
+        postToSave.setTitle(post_title);
+
+        // Setting body here
+        postToSave.setBody(body);
+
+        // Setting user here
+        postToSave.setOwner(userToAdd);
+
+        // Save posts here
+        postDao.save(postToSave);
+
+        return "Post created!";
     }
 
 }
