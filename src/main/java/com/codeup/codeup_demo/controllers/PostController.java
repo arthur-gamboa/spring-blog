@@ -39,20 +39,22 @@ public class PostController {
     }
 
     @GetMapping("/posts/create")
-    public String viewPostForm() {
+    public String viewPostForm(Model vModel) {
+        vModel.addAttribute("post", new Post());
         return "posts/create";
     }
 
     @PostMapping("/posts/create")
-    public String createPost(@RequestParam(name = "post_title") String post_title, @RequestParam(name = "post_body")String body) {
-        Post postToSave = new Post();
+    @ResponseBody
+    public String createPost(@ModelAttribute Post postToSave) {
+//        Post postToSave = new Post();
         User userToAdd = userDao.getOne(2L);
 
-        // Setting title here
-        postToSave.setTitle(post_title);
-
-        // Setting body here
-        postToSave.setBody(body);
+//        // Setting title here
+//        postToSave.setTitle(post_title);
+//
+//        // Setting body here
+//        postToSave.setBody(body);
 
         // Setting user here
         postToSave.setOwner(userToAdd);
@@ -60,7 +62,27 @@ public class PostController {
         // Save posts here
         postDao.save(postToSave);
 
-        return "Post created!";
+        return "redirect:/posts";
+    }
+
+    @GetMapping("/posts/{id}/edit")
+    public String viewEditForm(Model vModel, @PathVariable Long id) {
+        vModel.addAttribute("post", postDao.getOne(id));
+        return "posts/create";
+    }
+
+    @PostMapping("/posts/{id}/edit")
+    @ResponseBody
+    public String editPost(@ModelAttribute Post postToUpdate, @PathVariable Long id) {
+
+        User userToAdd = userDao.getOne(2L);
+
+        postToUpdate.setId(id);
+
+        postToUpdate.setOwner(userToAdd);
+        postDao.save(postToUpdate);
+
+        return "redirect:/posts";
     }
 
 }
