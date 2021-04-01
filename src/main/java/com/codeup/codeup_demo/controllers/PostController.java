@@ -4,6 +4,7 @@ import com.codeup.codeup_demo.models.Post;
 import com.codeup.codeup_demo.models.User;
 import com.codeup.codeup_demo.repo.PostRepository;
 import com.codeup.codeup_demo.repo.UserRepository;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -45,10 +46,10 @@ public class PostController {
     }
 
     @PostMapping("/posts/create")
-    @ResponseBody
+//    @ResponseBody
     public String createPost(@ModelAttribute Post postToSave) {
 //        Post postToSave = new Post();
-        User userToAdd = userDao.getOne(2L);
+        User userToAdd = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
 //        // Setting title here
 //        postToSave.setTitle(post_title);
@@ -75,7 +76,7 @@ public class PostController {
     @ResponseBody
     public String editPost(@ModelAttribute Post postToUpdate, @PathVariable Long id) {
 
-        User userToAdd = userDao.getOne(2L);
+        User userToAdd = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         postToUpdate.setId(id);
 

@@ -10,6 +10,9 @@
 </th:block>
 
 <body>
+
+<nav th:replace="fragments/navbar :: mainNav"></nav>
+
     <th:block th:if="${post.id == null}">
 
         <form th:action="@{/posts/create}" method="post" th:object="${post}">
