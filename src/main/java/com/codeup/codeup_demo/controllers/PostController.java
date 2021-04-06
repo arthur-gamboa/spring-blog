@@ -73,8 +73,9 @@ public class PostController {
     }
 
     @PostMapping("/posts/{id}/edit")
-    @ResponseBody
-    public String editPost(@ModelAttribute Post postToUpdate, @PathVariable Long id) {
+//    @ResponseBody
+//    public String editPost(@ModelAttribute Post postToUpdate, @PathVariable Long id) {
+    public String updatePost(@PathVariable Long id, @ModelAttribute Post postToUpdate) {
 
         User userToAdd = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
