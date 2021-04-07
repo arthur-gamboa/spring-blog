@@ -1,9 +1,11 @@
 package com.codeup.codeup_demo;
 
+import com.codeup.codeup_demo.models.Post;
 import com.codeup.codeup_demo.models.User;
 import com.codeup.codeup_demo.repo.PostRepository;
 import com.codeup.codeup_demo.repo.UserRepository;
 import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -54,10 +56,74 @@ private HttpSession httpSession;
                 .param("username", "testUser")
                 .param("password", "pass"))
                 .andExpect(status().is(HttpStatus.FOUND.value()))
-                .andExpect(redirectedUrl("/ads"))
+                .andExpect(redirectedUrl("/posts"))
                 .andReturn()
                 .getRequest()
                 .getSession();
         }
+
+    @Test
+    public void contextLoads() {
+        // Sanity Test, just to make sure the MVC bean is working
+        assertNotNull(mvc);
     }
+    @Test
+    public void testIfUserSessionIsActive() throws Exception {
+        // It makes sure the returned session is not null
+        assertNotNull(httpSession);
+    }
+    @Test
+    public void testCreatePost() throws Exception {
+        // Makes a Post request to /ads/create and expect a redirection to the Ad
+        this.mvc.perform(
+                post("/posts/create").with(csrf())
+                        .session((MockHttpSession) httpSession)
+                        // Add all the required parameters to your request like this
+                        .param("title", "new ps5")
+                        .param("description", "for sale $$"))
+                .andExpect(status().is3xxRedirection());
+    }
+    @Test
+    public void testShowPost() throws Exception {
+        // get the first post
+        Post existingPost = postDao.findAll().get(0);
+        // Makes a Get request to /posts/{id} and expect a redirection to the Post show page
+        this.mvc.perform(get("/posts/" + existingPost.getId()))
+                .andExpect(status().isOk())
+                // Test the dynamic content of the page
+                .andExpect(content().string(containsString(existingPost.getDescription())));
+    }
+    @Test
+    public void testPostIndex() throws Exception {
+        Post existingPost = postDao.findAll().get(0);
+        // Makes a Get request to /posts and verifies that we get some of the static text of the posts/index.html template and at least the title from the first Post is present in the template.
+        this.mvc.perform(get("/posts"))
+                .andExpect(status().isOk())
+                // Test the static content of the page d
+                .andExpect(content().string(containsString("Latest posts")))
+                // Test the dynamic content of the page
+                .andExpect(content().string(containsString(existingPost.getTitle())));
+    }
+
+    @Test
+    public void testEditPost() throws Exception {
+        // Gets the first Post for tests purposes
+        Post existingPost = postDao.findAll().get(0);
+
+        // Makes a Post request to /posts/{id}/edit and expect a redirection to the Post show page
+        this.mvc.perform(
+                post("/posts/" + existingPost.getId() + "/update").with(csrf())
+                        .session((MockHttpSession) httpSession)
+                        .param("title", "edited title")
+                        .param("description", "edited description"))
+                .andExpect(status().is3xxRedirection());
+
+        // Makes a GET request to /posts/{id} and expect a redirection to the Post show page
+        this.mvc.perform(get("/posts/" + existingPost.getId()))
+                .andExpect(status().isOk())
+                // Test the dynamic content of the page
+                .andExpect(content().string(containsString("edited title")))
+                .andExpect(content().string(containsString("edited description")));
+    }
+
 }
